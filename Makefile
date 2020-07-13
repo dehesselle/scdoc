@@ -1,6 +1,13 @@
 VERSION=1.10.1
 CFLAGS+=-g -DVERSION='"$(VERSION)"' -Wall -Wextra -Werror -Wno-unused-parameter
-LDFLAGS+=-static
+
+# '-static' not supported on macOS due to lack of 'crt0.o'
+# https://lists.sr.ht/~sircmpwn/public-inbox/%3C3A12328E-5EC6-4E34-A676-64A3039A2AF7%40herrbischoff.com%3E
+UNAME := $(shell uname)
+ifneq ($(UNAME), Darwin)
+	LDFLAGS+=-static
+endif
+
 INCLUDE+=-Iinclude
 PREFIX?=/usr/local
 _INSTDIR=$(DESTDIR)$(PREFIX)
